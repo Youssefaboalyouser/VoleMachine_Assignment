@@ -9,12 +9,14 @@
 using namespace std;
 
 // ============================== Registers Class ==============================
+// The Registers class manages a set of 16 registers, identified by hexadecimal keys "0" to "F".
 Registers::Registers()
 {
+    // Initialize each register with a default value of "00"
     registers = {
         {"0", "00"}, {"1", "00"}, {"2", "00"}, {"3", "00"}, {"4", "00"}, {"5", "00"}, {"6", "00"}, {"7", "00"}, {"8", "00"}, {"9", "00"}, {"A", "00"}, {"B", "00"}, {"C", "00"}, {"D", "00"}, {"E", "00"}, {"F", "00"}};
 }
-
+// Returns the value of a specified register
 string Registers::get(const string &reg)
 {
     if (registers.find(reg) != registers.end())
@@ -23,7 +25,7 @@ string Registers::get(const string &reg)
     }
     throw invalid_argument("Invalid register: " + reg);
 }
-
+// Sets a specific register to a given value
 void Registers::set(const string &reg, const string &value)
 {
     if (registers.find(reg) != registers.end())
@@ -35,25 +37,29 @@ void Registers::set(const string &reg, const string &value)
         throw invalid_argument("Invalid register: " + reg);
     }
 }
-
+// Displays the current state of all registers
 void Registers::display() const
 {
     cout << "Registers:\n";
+    cout << "====================\n";
     for (const auto &reg : registers)
     {
         cout << reg.first << ": " << reg.second << "  ";
     }
     cout << endl;
 }
-
+// Checks if a given character corresponds to a valid register
 bool Registers::is_valid_register(char reg) const
 {
     return registers.find(string(1, reg)) != registers.end();
 }
 
 // ============================== Memory Class ==============================
+// The Memory class represents memory locations with addresses from "00" to "FF".
+
 Memory::Memory()
 {
+    // Initialize each memory location to "00" in hexadecimal format
     for (int i = 0; i <= 0xFF; ++i)
     {
         stringstream ss;
@@ -61,7 +67,7 @@ Memory::Memory()
         memory[ss.str()] = "00";
     }
 }
-
+// Retrieves the value at a specific memory address
 string Memory::get(const string &addr)
 {
     if (memory.find(addr) != memory.end())
@@ -70,7 +76,7 @@ string Memory::get(const string &addr)
     }
     throw invalid_argument("Invalid memory address: " + addr);
 }
-
+// Sets a value at a specific memory address
 void Memory::set(const string &addr, const string &value)
 {
     if (memory.find(addr) != memory.end())
@@ -82,10 +88,11 @@ void Memory::set(const string &addr, const string &value)
         throw invalid_argument("Invalid memory address: " + addr);
     }
 }
-
+// Displays the current state of memory
 void Memory::display() const
 {
     cout << "Memory:\n";
+    cout << "====================\n";
     int count = 0;
     for (const auto &mem : memory)
     {
@@ -94,18 +101,21 @@ void Memory::display() const
             cout << endl;
     }
 }
-
+// Checks if a given address is valid in memory
 bool Memory::is_valid_memory(const string &addr) const
 {
     return memory.find(addr) != memory.end();
 }
 
-// ============================== CU Class ==============================
+// ============================== CU (Control Unit) Class ==============================
+// The CU class interprets and executes instructions, coordinating between the Registers and Memory.
 CU::CU(Registers &regs, Memory &mem) : registers(regs), memory(mem) {}
-
+// Executes an instruction based on its opcode
 void CU::execute_instruction(const string &instruction, unsigned int &address)
 {
     char opcode = instruction[0];
+    // Executes specific instructions based on the opcode
+        // Examples include loading values, storing values, arithmetic, and bitwise operations
     switch (opcode)
     {
     case '1':
@@ -156,6 +166,8 @@ void CU::execute_instruction(const string &instruction, unsigned int &address)
         cout << "Unknown opcode: " << opcode << endl;
     }
 }
+
+// Implementing each instruction method (e.g., loading memory to a register)
 
 void CU::load_memory_to_register(const string &instruction)
 {
@@ -224,7 +236,7 @@ void CU::move_between_registers(const string &instruction)
         cout << "Invalid register!\n";
     }
 }
-
+// Adds values in two registers and stores the result in another register
 void CU::add_registers(const string &instruction)
 {
     string reg1 = instruction.substr(2, 1);
@@ -256,7 +268,7 @@ void CU::add_registers(const string &instruction)
         cout << "Invalid register!\n";
     }
 }
-
+// Performs a floating-point addition using specific bits for mantissa and exponent
 void CU::immediate_floating_addition(const string &instruction)
 {
     string dest = instruction.substr(1, 1);
@@ -327,6 +339,7 @@ void CU::immediate_floating_addition(const string &instruction)
     memory.display();
 }
 
+// Handles jump instructions to change the program counter
 void CU::jump_to(const string &instruction, unsigned int &address)
 {
     string reg = instruction.substr(1, 1);
@@ -336,6 +349,7 @@ void CU::jump_to(const string &instruction, unsigned int &address)
     {
         address = stoi(addr, nullptr, 16) - 1;
     }
+    cout <<"program counter at memory address: " << address << "will execut what inside!" <<endl;
     registers.display();
     memory.display();
 }
@@ -349,10 +363,13 @@ void CU::jump_to_v2(const string &instruction, unsigned int &address)
     {
         address = stoi(addr, nullptr, 16) - 1;
     }
+    cout <<"program counter at memory address: " << address << "will execut what inside!" <<endl;
     registers.display();
     memory.display();
 };
 
+
+// Bitwise operations like OR, AND, XOR between register values
 void CU::bitwise_or(const string &instruction)
 {
     bitwise_operation(instruction, '|');
@@ -412,6 +429,8 @@ void CU::bitwise_operation(const string &instruction, char op)
     }
 }
 
+
+// Rotates the value in a register by a specified number of steps
 void CU::rotatefunction(const string &instruction)
 {
     string reg = instruction.substr(1, 1);
@@ -448,7 +467,7 @@ string CU::rotateHexValue(string reg, int steps)
     string rotatedBinaryValue = rotatedPart + binaryValue.substr(0, binaryLength - steps);
     return binaryToHex(rotatedBinaryValue);
 }
-
+// Halts the execution of the Vole Machine
 void CU::halt() const
 {
     cout << "Execution halted.\n";
@@ -458,8 +477,9 @@ void CU::halt() const
 }
 
 // ============================== VOLEMACHINE Class ==============================
+// This class is the main interface for loading and running programs on the Vole Machine.
 VOLEMACHINE::VOLEMACHINE() : control_unit(registers, memory) {}
-
+// Loads instructions from a file into memory
 void VOLEMACHINE::load_file(const string &filename)
 {
     ifstream infile(filename);
@@ -478,7 +498,7 @@ void VOLEMACHINE::load_file(const string &filename)
     if (!memory.is_valid_memory(start_address))
     {
         cerr << "Invalid memory address!\n";
-        return; // Remove exit() and handle it gracefully
+        return;
     }
 
     program_counter = start_address;
@@ -514,7 +534,7 @@ void VOLEMACHINE::load_file(const string &filename)
 
     cout << "Instructions loaded into memory starting from address " << start_address << ".\n";
 }
-
+// Runs the loaded instructions, interpreting each in sequence
 void VOLEMACHINE::run()
 {
     unsigned int address = stoi(program_counter, nullptr, 16);
@@ -537,6 +557,7 @@ void VOLEMACHINE::run()
         string instruction = instruction_part1 + instruction_part2;
 
         // Execute the instruction
+        cout << "======================================================================================================\n";
         control_unit.execute_instruction(instruction, address);
 
         // Check if the current address is the last one
@@ -550,6 +571,7 @@ void VOLEMACHINE::run()
         ++address;
     }
 }
+// Displays the current state of registers and memory
 void VOLEMACHINE::display() const
 {
     registers.display();
