@@ -1,21 +1,20 @@
 #include "VoleMachine.cpp"
 #include <iostream>
 using namespace std;
-
 int main()
 {
-    cout << ">>> VOLE MACHINE SIMULATOR <<<\n";
-    VOLEMACHINE machine;  // Instantiate a VOLEMACHINE object
+    cout << ">>> VOLE MACHINE SIMULATOR <<<*\n";
+    VOLEMACHINE machine;
     string choice;
 
     while (true)
     {
-        cout << "\n(1) Upload instructions file and run\n(2) Display memory\n(3) Exit\n";
+        cout << "\n(1) Upload instructions file and run\n(2) Display memory\n(3) Reset Memory\n(4) Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
         if (choice == "1")
-        { //  Load instructions file and run
+        {
             string filename;
             cout << "Enter the filename: ";
             cin >> filename;
@@ -23,16 +22,23 @@ int main()
 
             // Run only if the file was loaded successfully
             ifstream testFile(filename);
-            if (testFile) {
+            if (testFile)
+            {
                 machine.run();
             }
             testFile.close();
         }
         else if (choice == "2")
-        { // Display memory
+        {
             machine.display();
         }
         else if (choice == "3")
+        {
+            machine.registers = Registers();
+            machine.memory = Memory();
+            cout << "+++>> Memory and Register have been reset" << endl;
+        }
+        else if (choice == "4")
         {
             cout << "\n======>>> GOOD BYE <<<======" << endl;
             return 0;
@@ -43,4 +49,3 @@ int main()
         }
     }
 }
-

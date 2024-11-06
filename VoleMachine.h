@@ -72,13 +72,13 @@ public:
     void load_file(const string &filename); // Load instructions from a file into memory
     void run(); // Run the loaded instructions
     void display() const; // Display the current state of registers and memory
-
-private:
     Registers registers; // Registers object
     Memory memory; // Memory object
+
+private:
     CU control_unit; // Control Unit object
     unsigned int last_instruction_address; // Address of the last instruction loaded into memory
     string program_counter; // Starting address of instructions
 };
 
-#endif // VOLEMACHINE_H
+#endif // VOLEMACHINE_H
