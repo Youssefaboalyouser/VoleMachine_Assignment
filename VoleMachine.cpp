@@ -177,8 +177,6 @@ void CU::load_memory_to_register(const string &instruction)
     {
         registers.set(reg, memory.get(addr));
         cout << "Loaded memory[" << addr << "] into register R" << reg << "\n";
-        registers.display();
-        memory.display();
     }
     else
     {
@@ -194,8 +192,6 @@ void CU::load_immediate_to_register(const string &instruction)
     {
         registers.set(reg, value);
         cout << "Loaded immediate " << value << " into register R" << reg << "\n";
-        registers.display();
-        memory.display();
     }
     else
     {
@@ -211,8 +207,6 @@ void CU::store_register_to_memory(const string &instruction)
     {
         memory.set(addr, registers.get(reg));
         cout << "Stored register R" << reg << " into memory[" << addr << "]\n";
-        registers.display();
-        memory.display();
     }
     else
     {
@@ -228,8 +222,6 @@ void CU::move_between_registers(const string &instruction)
     {
         registers.set(dest, registers.get(src));
         cout << "Moved value from R" << src << " to R" << dest << "\n";
-        registers.display();
-        memory.display();
     }
     else
     {
@@ -258,10 +250,7 @@ void CU::add_registers(const string &instruction)
 
         // Store the result in the destination register
         registers.set(dest, ss.str());
-
         cout << "Added R" << reg1 << " and R" << reg2 << " (modulo 256), result put in R" << dest << " as " << ss.str() << "\n";
-        registers.display();
-        memory.display();
     }
     else
     {
@@ -335,8 +324,6 @@ void CU::immediate_floating_addition(const string &instruction)
     string result_in_hex = bin_to_hex(float_to_bin(resultFloat));
     registers.set(dest, result_in_hex);
     cout << "Added floating-point values of R" << Reg1 << " and R" << Reg2 << ", result stored in R" << dest << " as " << result_in_hex << endl;
-    registers.display();
-    memory.display();
 }
 
 // Handles jump instructions to change the program counter
@@ -350,8 +337,6 @@ void CU::jump_to(const string &instruction, unsigned int &address)
         address = stoi(addr, nullptr, 16) - 1;
     }
     cout <<"program counter at memory address: " << address << "will execut what inside!" <<endl;
-    registers.display();
-    memory.display();
 }
 
 void CU::jump_to_v2(const string &instruction, unsigned int &address)
@@ -364,8 +349,6 @@ void CU::jump_to_v2(const string &instruction, unsigned int &address)
         address = stoi(addr, nullptr, 16) - 1;
     }
     cout <<"program counter at memory address: " << address << "will execut what inside!" <<endl;
-    registers.display();
-    memory.display();
 };
 
 
@@ -373,22 +356,16 @@ void CU::jump_to_v2(const string &instruction, unsigned int &address)
 void CU::bitwise_or(const string &instruction)
 {
     bitwise_operation(instruction, '|');
-    registers.display();
-    memory.display();
 }
 
 void CU::bitwise_and(const string &instruction)
 {
     bitwise_operation(instruction, '&');
-    registers.display();
-    memory.display();
 }
 
 void CU::bitwise_Xor(const string &instruction)
 {
     bitwise_operation(instruction, '^');
-    registers.display();
-    memory.display();
 }
 
 void CU::bitwise_operation(const string &instruction, char op)
@@ -438,8 +415,6 @@ void CU::rotatefunction(const string &instruction)
     string value = rotateHexValue(reg, steps);
     cout << "In Register R" << reg << "make Rotate by" << steps << "steps" << endl;
     registers.set(reg, value);
-    registers.display();
-    memory.display();
 }
 
 string CU::rotateHexValue(string reg, int steps)
