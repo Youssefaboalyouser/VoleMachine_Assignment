@@ -1,4 +1,4 @@
-#include "VoleMachine.h"
+#include "A1_T4_S2_20231094_20230475_20230801.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -91,6 +91,7 @@ void Memory::set(const string &addr, const string &value)
 // Displays the current state of memory
 void Memory::display() const
 {
+//    Memory mem;
     cout << "Memory:\n";
     cout << "====================\n";
     int count = 0;
@@ -100,6 +101,7 @@ void Memory::display() const
         if (++count % 8 == 0)
             cout << endl;
     }
+
 }
 // Checks if a given address is valid in memory
 bool Memory::is_valid_memory(const string &addr) const
@@ -115,7 +117,7 @@ void CU::execute_instruction(const string &instruction, unsigned int &address)
 {
     char opcode = instruction[0];
     // Executes specific instructions based on the opcode
-        // Examples include loading values, storing values, arithmetic, and bitwise operations
+    // Examples include loading values, storing values, arithmetic, and bitwise operations
     switch (opcode)
     {
     case '1':
@@ -164,6 +166,20 @@ void CU::execute_instruction(const string &instruction, unsigned int &address)
         break;
     default:
         cout << "Unknown opcode: " << opcode << endl;
+    }
+
+    if (memory.get("00") != "00") {
+        cout<<"Memory Screen:\n";
+        cout<<"=====================\n";
+        // Retrieve the hex value from memory address "00"
+        string hexValue = memory.get("00");
+
+        // Convert the hex value to an integer
+        int intValue = stoi(hexValue, nullptr, 16);
+
+        // Print the hex value and the corresponding ASCII character
+        cout << "Hex Value in memory 00 is: " << hexValue << endl;
+        cout << "Corresponding ASCII Value is: " << static_cast<char>(intValue) << endl;
     }
 }
 
@@ -250,6 +266,7 @@ void CU::add_registers(const string &instruction)
 
         // Store the result in the destination register
         registers.set(dest, ss.str());
+
         cout << "Added R" << reg1 << " and R" << reg2 << " (modulo 256), result put in R" << dest << " as " << ss.str() << "\n";
     }
     else
@@ -336,7 +353,7 @@ void CU::jump_to(const string &instruction, unsigned int &address)
     {
         address = stoi(addr, nullptr, 16) - 1;
     }
-    cout <<"program counter at memory address: " << address << "will execut what inside!" <<endl;
+    cout << "program counter at memory address: " << address << "will execut what inside!" << endl;
 }
 
 void CU::jump_to_v2(const string &instruction, unsigned int &address)
@@ -348,9 +365,8 @@ void CU::jump_to_v2(const string &instruction, unsigned int &address)
     {
         address = stoi(addr, nullptr, 16) - 1;
     }
-    cout <<"program counter at memory address: " << address << "will execut what inside!" <<endl;
+    cout << "program counter at memory address: " << address << "will execut what inside!" << endl;
 };
-
 
 // Bitwise operations like OR, AND, XOR between register values
 void CU::bitwise_or(const string &instruction)
@@ -406,12 +422,11 @@ void CU::bitwise_operation(const string &instruction, char op)
     }
 }
 
-
 // Rotates the value in a register by a specified number of steps
 void CU::rotatefunction(const string &instruction)
 {
     string reg = instruction.substr(1, 1);
-    int steps = stoi(instruction.substr(2, 3)); // 50
+    int steps = stoi(instruction.substr(2, 3));
     string value = rotateHexValue(reg, steps);
     cout << "In Register R" << reg << "make Rotate by" << steps << "steps" << endl;
     registers.set(reg, value);
@@ -424,12 +439,12 @@ string CU::rotateHexValue(string reg, int steps)
         unsigned int num = stoi(hexStr, nullptr, 16);
         string bin = bitset<32>(num).to_string();
         // Remove leading zeros
-        bin.erase(0, bin.find_first_not_of('0'));
+        // bin.erase(0, bin.find_first_not_of('0'));
         return bin;
-    }; // error is here
+    };
     auto binaryToHex = [](const string &bin)
     {
-        int hexValue = bitset<8>(bin).to_ulong();
+        int hexValue = bitset<9>(bin).to_ulong();
         stringstream ss;
         ss << uppercase << hex << setw(2) << setfill('0') << hexValue;
         return ss.str();
